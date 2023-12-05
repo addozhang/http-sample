@@ -6,7 +6,7 @@ metadata:
     app: service-a
     version: v1
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: service-a
@@ -15,10 +15,14 @@ spec:
       labels:
         app: service-a
         version: v1
+      annotations:
+        instrumentation.opentelemetry.io/inject-go: "true"
+        instrumentation.opentelemetry.io/otel-go-auto-target-exe: "/main"
     spec:
       containers:
         - name: service-a
           image: addozhang/http-sample
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
           env:
@@ -27,7 +31,7 @@ spec:
             - name: version
               value: "v1"
             - name: upstream
-              value: "http://service-b:8080"
+              value: "http://service-b:8080/"
 ---
 apiVersion: v1
 kind: Service
@@ -52,7 +56,7 @@ metadata:
     app: service-b
     version: v1
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: service-b
@@ -61,10 +65,14 @@ spec:
       labels:
         app: service-b
         version: v1
+      annotations:
+        instrumentation.opentelemetry.io/inject-go: "true"
+        instrumentation.opentelemetry.io/otel-go-auto-target-exe: "/main"
     spec:
       containers:
         - name: service-b
           image: addozhang/http-sample
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
           env:
@@ -73,7 +81,7 @@ spec:
             - name: version
               value: "v1"
             - name: upstream
-              value: "http://service-c:8080"
+              value: "http://service-c:8080/"
 ---
 apiVersion: v1
 kind: Service
@@ -99,7 +107,7 @@ metadata:
     app: service-c
     version: v1
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: service-c
@@ -108,10 +116,14 @@ spec:
       labels:
         app: service-c
         version: v1
+      annotations:
+        instrumentation.opentelemetry.io/inject-go: "true"
+        instrumentation.opentelemetry.io/otel-go-auto-target-exe: "/main"
     spec:
       containers:
         - name: service-c
           image: addozhang/http-sample
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
           env:
