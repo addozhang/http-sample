@@ -95,10 +95,6 @@ func handle(w http.ResponseWriter, r *http.Request) {
 	ip, hostname := getIPAndHostname()
 	response := fmt.Sprintf("%s(version: %s, ip: %s, hostname: %s)", appName, version, ip, hostname)
 
-	for k, v := range r.Header {
-		fmt.Printf("%s: %s\n", k, v)
-	}
-
 	if upstream != "" {
 		client := &http.Client{Transport: otelhttp.NewTransport(http.DefaultTransport)}
 		req, _ := http.NewRequestWithContext(r.Context(), "GET", upstream, nil)
