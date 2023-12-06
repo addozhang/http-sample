@@ -16,8 +16,7 @@ spec:
         app: service-a
         version: v1
       annotations:
-        instrumentation.opentelemetry.io/inject-go: "true"
-        instrumentation.opentelemetry.io/otel-go-auto-target-exe: "/main"
+        instrumentation.opentelemetry.io/inject-sdk: "true"
     spec:
       containers:
         - name: service-a
@@ -66,8 +65,7 @@ spec:
         app: service-b
         version: v1
       annotations:
-        instrumentation.opentelemetry.io/inject-go: "true"
-        instrumentation.opentelemetry.io/otel-go-auto-target-exe: "/main"
+        instrumentation.opentelemetry.io/inject-sdk: "true"
     spec:
       containers:
         - name: service-b
@@ -117,8 +115,7 @@ spec:
         app: service-c
         version: v1
       annotations:
-        instrumentation.opentelemetry.io/inject-go: "true"
-        instrumentation.opentelemetry.io/otel-go-auto-target-exe: "/main"
+        instrumentation.opentelemetry.io/inject-sdk: "true"
     spec:
       containers:
         - name: service-c
