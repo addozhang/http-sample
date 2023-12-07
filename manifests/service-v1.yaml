@@ -1,3 +1,8 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: service-a
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -19,6 +24,7 @@ spec:
         instrumentation.opentelemetry.io/inject-sdk: "true"
         instrumentation.opentelemetry.io/container-names: "service-a"
     spec:
+      serviceAccountName: service-a
       containers:
         - name: service-a
           image: addozhang/http-sample
@@ -48,6 +54,11 @@ spec:
       port: 8080
       targetPort: 8080
 ---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: service-b
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -69,6 +80,7 @@ spec:
         instrumentation.opentelemetry.io/inject-sdk: "true"
         instrumentation.opentelemetry.io/container-names: "service-b"
     spec:
+      serviceAccountName: service-b
       containers:
         - name: service-b
           image: addozhang/http-sample
@@ -99,6 +111,11 @@ spec:
       targetPort: 8080
 
 ---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: service-c
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -120,6 +137,7 @@ spec:
         instrumentation.opentelemetry.io/inject-sdk: "true"
         instrumentation.opentelemetry.io/container-names: "service-c"
     spec:
+      serviceAccountName: service-c
       containers:
         - name: service-c
           image: addozhang/http-sample
