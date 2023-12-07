@@ -4,10 +4,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"go.opentelemetry.io/contrib/propagators/b3"
+	"go.opentelemetry.io/contrib/propagators/jaeger"
 	"go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetrichttp"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp"
 	"os"
+	"strings"
 	"time"
 
 	"go.opentelemetry.io/otel"
@@ -20,6 +23,7 @@ import (
 )
 
 const OtelExporterOTLPEndpoints = "OTEL_EXPORTER_OTLP_ENDPOINT"
+const OtelPropagators = "OTEL_PROPAGATORS"
 
 // setupOTelSDK bootstraps the OpenTelemetry pipeline.
 // If it does not return an error, make sure to call shutdown for proper cleanup.
@@ -89,10 +93,28 @@ func newResource(serviceName, serviceVersion string) (*resource.Resource, error)
 }
 
 func newPropagator() propagation.TextMapPropagator {
-	return propagation.NewCompositeTextMapPropagator(
-		propagation.TraceContext{},
-		propagation.Baggage{},
-	)
+	propagatorString := os.Getenv(OtelPropagators)
+	var propagators []propagation.TextMapPropagator
+	if propagatorString != "" {
+		for _, p := range strings.Split(propagatorString, ",") {
+			switch p {
+			case "tracecontext":
+				propagators = append(propagators, propagation.TraceContext{})
+			case "b3":
+				propagators = append(propagators, b3.New(b3.WithInjectEncoding(b3.B3SingleHeader)))
+			case "b3multi":
+				propagators = append(propagators, b3.New(b3.WithInjectEncoding(b3.B3MultipleHeader)))
+			case "baggage":
+				propagators = append(propagators, propagation.Baggage{})
+			case "jaeger":
+				propagators = append(propagators, jaeger.Jaeger{})
+			}
+		}
+	}
+	if len(propagators) == 0 {
+		propagators = append(propagators, b3.New(b3.WithInjectEncoding(b3.B3SingleHeader)))
+	}
+	return propagation.NewCompositeTextMapPropagator(propagators...)
 }
 
 func newTraceProvider(res *resource.Resource) (*trace.TracerProvider, error) {
