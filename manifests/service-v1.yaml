@@ -17,6 +17,7 @@ spec:
         version: v1
       annotations:
         instrumentation.opentelemetry.io/inject-sdk: "true"
+        instrumentation.opentelemetry.io/container-names: "service-a"
     spec:
       containers:
         - name: service-a
@@ -66,6 +67,7 @@ spec:
         version: v1
       annotations:
         instrumentation.opentelemetry.io/inject-sdk: "true"
+        instrumentation.opentelemetry.io/container-names: "service-b"
     spec:
       containers:
         - name: service-b
@@ -116,6 +118,7 @@ spec:
         version: v1
       annotations:
         instrumentation.opentelemetry.io/inject-sdk: "true"
+        instrumentation.opentelemetry.io/container-names: "service-c"
     spec:
       containers:
         - name: service-c
